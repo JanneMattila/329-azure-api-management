@@ -1,4 +1,13 @@
 Param (
+    [Parameter(HelpMessage="Deployment storage account resource group")] 
+    [string] $DeploymentResourceGroupName = "rg-apimdeploy-local",
+
+    [Parameter(HelpMessage="Deployment storage account name")] 
+    [string] $DeploymentStorageName = "apimdeploylocal",
+
+    [Parameter(HelpMessage="Deployment container")] 
+    [string] $DeploymentContainer = "local",
+
     [Parameter(HelpMessage="Deployment target resource group")] 
     [string] $ResourceGroupName = "rg-apim-local",
 
@@ -11,7 +20,7 @@ Param (
     [Parameter(HelpMessage="API HttpBinAPI ServiceUrl")] 
     [string] $APIHttpBinAPIServiceUrl = "https://httpbin.org",
 
-    [string] $Template = "$PSScriptRoot\azuredeploy.json",
+    [string] $Template = "azuredeploy.json",
     [string] $TemplateParameters = "$PSScriptRoot\azuredeploy.parameters.json"
 )
 
@@ -34,6 +43,38 @@ else
     $deploymentName = $env:RELEASE_RELEASENAME
 }
 
+# Deployment helper storage account
+if ($null -eq (Get-AzResourceGroup -Name $DeploymentResourceGroupName -Location $Location -ErrorAction SilentlyContinue))
+{
+    Write-Warning "Resource group '$DeploymentResourceGroupName' doesn't exist and it will be created."
+    New-AzResourceGroup -Name $DeploymentResourceGroupName -Location $Location -Verbose
+    New-AzStorageAccount `
+        -ResourceGroupName $DeploymentResourceGroupName `
+        -Name $DeploymentStorageName `
+        -Location $Location `
+        -SkuName Standard_LRS `
+        -EnableHttpsTrafficOnly
+}
+
+Set-AzCurrentStorageAccount -ResourceGroupName $DeploymentResourceGroupName -Name $DeploymentStorageName
+
+New-AzStorageContainer -Name $DeploymentContainer -ErrorAction Continue
+$folder = "$PSScriptRoot\"
+Get-ChildItem -File -Recurse $folder -Filter *.json `
+    | ForEach-Object  { 
+        $name = $_.FullName.Replace($folder,"")
+        $properties = @{"ContentType" = "application/json"}
+
+        Write-Host "Deploying file: $name"
+        Set-AzStorageBlobContent -File $_.FullName -Blob $name -Container $DeploymentContainer -Properties $properties -Force
+    }
+
+$containerSasToken = New-AzStorageContainerSASToken -Name $DeploymentContainer -Permission r -ExpiryTime (Get-Date).AddMinutes(30.0)
+$templateUrl = (Get-AzStorageBlob -Container $DeploymentContainer -Blob $Template).ICloudBlob.uri.AbsoluteUri
+
+($templateUrl + $containerSasToken)
+
+# Target deployment resource group
 if ($null -eq (Get-AzResourceGroup -Name $ResourceGroupName -Location $Location -ErrorAction SilentlyContinue))
 {
     Write-Warning "Resource group '$ResourceGroupName' doesn't exist and it will be created."
@@ -50,13 +91,13 @@ $additionalParameters['apiHttpBinAPIServiceUrl'] = $APIHttpBinAPIServiceUrl
 $result = New-AzResourceGroupDeployment `
     -DeploymentName $deploymentName `
     -ResourceGroupName $ResourceGroupName `
-    -TemplateFile $Template `
+    -TemplateUri ($templateUrl + $containerSasToken) `
     -TemplateParameterFile $TemplateParameters `
     @additionalParameters `
     -Mode Complete -Force `
     -Verbose
 
-if ($result.Outputs.apimGateway -eq $null)
+if ($null -eq $result.Outputs.apimGateway)
 {
     Throw "Template deployment didn't return web app information correctly and therefore deployment is cancelled."
 }
