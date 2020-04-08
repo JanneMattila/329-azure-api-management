@@ -1,0 +1,104 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "apimName": {
+      "type": "string",
+      "metadata": {
+        "description": "API Management name."
+      }
+    },
+    "publisherEmail": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "The email address of the owner of the service"
+      }
+    },
+    "publisherName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "The name of the owner of the service"
+      }
+    },
+    "apiHttpBinAPIServiceUrl": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "ServiceUrl of the HttpBinAPI"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    }
+  },
+  "variables": {
+    "apimref": "[resourceId('Microsoft.Network/frontDoors', parameters('apimName'))]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('apimName')]",
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2019-01-01",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Consumption"
+      },
+      "properties": {
+        "publisherEmail": "[parameters('publisherEmail')]",
+        "publisherName": "[parameters('publisherName')]"
+      }
+    },
+    {
+      "name": "[concat(parameters('apimName'), '/httpBinAPI')]",
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2019-01-01",
+      "properties": {
+        "displayName": "HTTP Bin API",
+        "description": "API Management facade for a very handy and free online HTTP tool",
+        "serviceUrl": "[parameters('apiHttpBinAPIServiceUrl')]",
+        "path": "httpbin",
+        "subscriptionRequired": false,
+        "protocols": [
+          "https"
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
+      ]
+    },
+    {
+      "name": "[concat(parameters('apimName'), '/httpBinAPI/get')]",
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2018-01-01",
+      "properties": {
+        "displayName": "Returns GET data.",
+        "method": "GET",
+        "urlTemplate": "/get",
+        "templateParameters": [],
+        "description": "Returns GET data.\n",
+        "responses": [
+          {
+            "statusCode": 200,
+            "description": "OK",
+            "headers": []
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apimName'), 'httpBinAPI')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "apimGateway": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('apimName'))).gatewayUrl]"
+    }
+  }
+}
