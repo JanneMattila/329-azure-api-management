@@ -1,4 +1,7 @@
 @apim = https://[yourapiminstance].azure-api.net
 
-###
+### Get 'httpbin'
 GET {{apim}}/httpbin/get HTTP/1.1
+
+### Get 'mock'
+GET {{apim}}/mock HTTP/1.1
