@@ -65,7 +65,7 @@ if ($null -eq (Get-AzStorageContainer -Name $DeploymentContainer -ErrorAction Si
 }
 
 $folder = "$PSScriptRoot\"
-Get-ChildItem -File -Recurse $folder -Filter *.json `
+Get-ChildItem -File -Recurse $folder -Exclude *.ps1 `
     | ForEach-Object  { 
         $name = $_.FullName.Replace($folder,"")
         $properties = @{"ContentType" = "application/json"}

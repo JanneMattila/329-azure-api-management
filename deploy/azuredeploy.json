@@ -63,7 +63,21 @@
       "properties": {
         "publisherEmail": "[parameters('publisherEmail')]",
         "publisherName": "[parameters('publisherName')]"
-      }
+      },
+      "resources": [
+        {
+          "name": "policy",
+          "type": "policies",
+          "apiVersion": "2019-01-01",
+          "properties": {
+            "value": "[concat(parameters('templateUrl'), 'policies/global.xml', parameters('templateToken'))]",
+            "format": "rawxml-link"
+          },
+          "dependsOn": [
+            "[parameters('apimName')]"
+          ]
+        }
+      ]
     },
     {
       "name": "apiHttpbinTemplate",
