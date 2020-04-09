@@ -72,14 +72,14 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-            "uri": "[concat(parameters('templateUrl'), 'api/httpbin/api.json', parameters('templateToken'))]"
-        },
-        "parametersLink": {
-          "uri": "[concat(parameters('templateUrl'), 'api/httpbin/api.parameters.json', parameters('templateToken'))]"
+            "uri":"[concat(parameters('templateUrl'), 'api/httpbin/api.json', parameters('templateToken'))]"
         },
         "parameters": {
             "apimName": {
               "value": "[parameters('apimName')]" 
+            },
+            "serviceUrl": {
+              "value": "[parameters('api_httpbin_serviceUrl')]" 
             }
           }
       },
