@@ -16,8 +16,6 @@
     }
   },
   "variables": {
-    "apimResourceId": "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]",
-
     "apiName": "httpbin",
     "apiPath": "httpbin",
 

@@ -117,6 +117,31 @@
       "dependsOn": [
         "[parameters('apimName')]"
       ]
+    },
+    {
+      "name": "apiMockTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+            "uri":"[concat(parameters('templateUrl'), 'api/mock/api.json', parameters('templateToken'))]"
+        },
+        "parameters": {
+            "apimName": {
+              "value": "[parameters('apimName')]" 
+            },
+            "templateUrl": {
+              "value": "[parameters('templateUrl')]" 
+            },
+            "templateToken": {
+              "value": "[parameters('templateToken')]" 
+            }
+          }
+      },
+      "dependsOn": [
+        "[parameters('apimName')]"
+      ]
     }
   ],
   "outputs": {

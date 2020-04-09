@@ -100,7 +100,7 @@ $result = New-AzResourceGroupDeployment `
     -TemplateParameterFile $TemplateParameters `
     @additionalParameters `
     -Mode Complete -Force `
-    -Verbose
+    -Verbose -Debug
 
 if ($null -eq $result.Outputs.apimGateway)
 {
