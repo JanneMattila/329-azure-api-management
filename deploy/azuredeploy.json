@@ -74,6 +74,12 @@
         "templateLink": {
             "uri":"[concat(parameters('templateUrl'), 'api/httpbin/api.json', parameters('templateToken'))]"
         },
+        /*
+         * If you prefer configuration parameters in file then this is option:
+        "parametersLink": {
+          "uri": "[concat(parameters('templateUrl'), 'api/httpbin/api.parameters.json', parameters('templateToken'))]"
+        }
+         */
         "parameters": {
             "apimName": {
               "value": "[parameters('apimName')]" 
@@ -81,6 +87,17 @@
             "serviceUrl": {
               "value": "[parameters('api_httpbin_serviceUrl')]" 
             }
+            /*
+            * If you prefer configuration parameters from KeyVault then this is option:
+            "serviceUrl": {
+              "reference": {
+                "keyVault": {
+                  "id": "[resourceId(parameters('keyVaultSubscription'), parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+                },
+                "serviceUrl": "API-httpbin-ServiceUrl"
+              }
+            }
+            */
           }
       },
       "dependsOn": [
