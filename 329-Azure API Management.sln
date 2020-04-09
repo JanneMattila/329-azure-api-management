@@ -24,6 +24,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit", "unit", "{7F48B88A-6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "release", "release", "{EC9C2024-7F3E-4C94-B592-9BC6A96AB14E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{9FB7722A-2845-4426-B955-6A0EACAF3EF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "echo", "echo", "{A685C596-5482-43C9-BEF5-B1C34DE4E578}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\api\echo\api.json = deploy\api\echo\api.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "httpbin", "httpbin", "{5E753C60-5429-4177-B264-9AC0D6AC5937}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\api\httpbin\api.json = deploy\api\httpbin\api.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -31,6 +43,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7F48B88A-6EC7-4AA2-84C5-CAC112F80102} = {70D80D12-0F5B-4966-9543-5304131A9000}
 		{EC9C2024-7F3E-4C94-B592-9BC6A96AB14E} = {70D80D12-0F5B-4966-9543-5304131A9000}
+		{9FB7722A-2845-4426-B955-6A0EACAF3EF3} = {8E178E6A-3786-4105-87DA-7523E146F09C}
+		{A685C596-5482-43C9-BEF5-B1C34DE4E578} = {9FB7722A-2845-4426-B955-6A0EACAF3EF3}
+		{5E753C60-5429-4177-B264-9AC0D6AC5937} = {9FB7722A-2845-4426-B955-6A0EACAF3EF3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F99521D6-99C8-41D7-83DC-3D5523498EE7}

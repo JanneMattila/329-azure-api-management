@@ -18,7 +18,7 @@ Param (
     [string] $APIMName = "contosoapim-local",
 
     [Parameter(HelpMessage="API HttpBinAPI ServiceUrl")] 
-    [string] $APIHttpBinAPIServiceUrl = "https://httpbin.org",
+    [string] $API_httpbin_ServiceUrl = "https://httpbin.org",
 
     [string] $Template = "azuredeploy.json",
     [string] $TemplateParameters = "$PSScriptRoot\azuredeploy.parameters.json"
@@ -58,7 +58,12 @@ if ($null -eq (Get-AzResourceGroup -Name $DeploymentResourceGroupName -Location 
 
 Set-AzCurrentStorageAccount -ResourceGroupName $DeploymentResourceGroupName -Name $DeploymentStorageName
 
-New-AzStorageContainer -Name $DeploymentContainer -ErrorAction Continue
+if ($null -eq (Get-AzStorageContainer -Name $DeploymentContainer -ErrorAction SilentlyContinue))
+{
+    Write-Warning "Deployment storage container '$DeploymentContainer' doesn't exist and it will be created."
+    New-AzStorageContainer -Name $DeploymentContainer
+}
+
 $folder = "$PSScriptRoot\"
 Get-ChildItem -File -Recurse $folder -Filter *.json `
     | ForEach-Object  { 
@@ -69,8 +74,8 @@ Get-ChildItem -File -Recurse $folder -Filter *.json `
         Set-AzStorageBlobContent -File $_.FullName -Blob $name -Container $DeploymentContainer -Properties $properties -Force
     }
 
-$containerSasToken = New-AzStorageContainerSASToken -Name $DeploymentContainer -Permission r -ExpiryTime (Get-Date).AddMinutes(30.0)
-$templateUrl = (Get-AzStorageBlob -Container $DeploymentContainer -Blob $Template).ICloudBlob.uri.AbsoluteUri
+$templateUrl = (Get-AzStorageContainer -Container $DeploymentContainer).CloudBlobContainer.StorageUri.PrimaryUri.AbsoluteUri + "/"
+$templateToken = New-AzStorageContainerSASToken -Name $DeploymentContainer -Permission r -ExpiryTime (Get-Date).AddMinutes(30.0)
 
 # Target deployment resource group
 if ($null -eq (Get-AzResourceGroup -Name $ResourceGroupName -Location $Location -ErrorAction SilentlyContinue))
@@ -82,14 +87,16 @@ if ($null -eq (Get-AzResourceGroup -Name $ResourceGroupName -Location $Location 
 # Additional parameters that we pass to the template deployment
 $additionalParameters = New-Object -TypeName hashtable
 $additionalParameters['apimName'] = $APIMName
+$additionalParameters['templateUrl'] = $templateUrl
+$additionalParameters['templateToken'] = $templateToken
 
 # API Endpoint Service Urls:
-$additionalParameters['apiHttpBinAPIServiceUrl'] = $APIHttpBinAPIServiceUrl
+$additionalParameters['api_httpbin_serviceUrl'] = $API_httpbin_ServiceUrl
 
 $result = New-AzResourceGroupDeployment `
     -DeploymentName $deploymentName `
     -ResourceGroupName $ResourceGroupName `
-    -TemplateUri ($templateUrl + $containerSasToken) `
+    -TemplateUri ($templateUrl + $Template + $templateToken) `
     -TemplateParameterFile $TemplateParameters `
     @additionalParameters `
     -Mode Complete -Force `

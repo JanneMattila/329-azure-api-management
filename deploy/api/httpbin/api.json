@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "apimName": {
+      "type": "string",
+      "metadata": {
+        "description": "API Management name."
+      }
+    },
+    "serviceUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "API Management name."
+      }
+    }
+  },
+  "variables": {
+    "apimResourceId": "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]",
+
+    "apiName": "httpbin",
+    "apiPath": "httpbin",
+
+    "apiResourceName": "[concat(parameters('apimName'), '/', variables('apiName'))]",
+    "apiResourceId": "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apimName'), variables('apiName'))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('apiResourceName')]",
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2019-01-01",
+      "properties": {
+        "displayName": "HTTP Bin API",
+        "description": "API Management facade for a very handy and free online HTTP tool",
+        "serviceUrl": "[parameters('serviceUrl')]",
+        "path": "[variables('apiPath')]",
+        "subscriptionRequired": false,
+        "protocols": [
+          "https"
+        ]
+      }
+    },
+    {
+      "name": "[concat(variables('apiResourceName'), '/get')]",
+      "type": "Microsoft.ApiManagement/service/apis/operations",
+      "apiVersion": "2018-01-01",
+      "properties": {
+        "displayName": "Returns GET data.",
+        "method": "GET",
+        "urlTemplate": "/get",
+        "templateParameters": [],
+        "description": "Returns GET data.\n",
+        "responses": [
+          {
+            "statusCode": 200,
+            "description": "OK",
+            "headers": []
+          }
+        ]
+      },
+      "dependsOn": [
+        "[variables('apiResourceId')]"
+      ]
+    }
+  ]
+}

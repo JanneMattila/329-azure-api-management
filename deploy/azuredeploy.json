@@ -22,7 +22,7 @@
         "description": "The name of the owner of the service"
       }
     },
-    "apiHttpBinAPIServiceUrl": {
+    "api_httpbin_serviceUrl": {
       "type": "string",
       "minLength": 1,
       "metadata": {
@@ -35,10 +35,21 @@
       "metadata": {
         "description": "Location for all resources."
       }
+    },
+    "templateUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account container base url for deployment templates"
+      }
+    },
+    "templateToken": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account access token for accessing templates"
+      }
     }
   },
   "variables": {
-    "apimref": "[resourceId('Microsoft.Network/frontDoors', parameters('apimName'))]"
   },
   "resources": [
     {
@@ -55,43 +66,25 @@
       }
     },
     {
-      "name": "[concat(parameters('apimName'), '/httpBinAPI')]",
-      "type": "Microsoft.ApiManagement/service/apis",
-      "apiVersion": "2019-01-01",
+      "name": "apiHttpbinTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
       "properties": {
-        "displayName": "HTTP Bin API",
-        "description": "API Management facade for a very handy and free online HTTP tool",
-        "serviceUrl": "[parameters('apiHttpBinAPIServiceUrl')]",
-        "path": "httpbin",
-        "subscriptionRequired": false,
-        "protocols": [
-          "https"
-        ]
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
-      ]
-    },
-    {
-      "name": "[concat(parameters('apimName'), '/httpBinAPI/get')]",
-      "type": "Microsoft.ApiManagement/service/apis/operations",
-      "apiVersion": "2018-01-01",
-      "properties": {
-        "displayName": "Returns GET data.",
-        "method": "GET",
-        "urlTemplate": "/get",
-        "templateParameters": [],
-        "description": "Returns GET data.\n",
-        "responses": [
-          {
-            "statusCode": 200,
-            "description": "OK",
-            "headers": []
+        "mode": "Incremental",
+        "templateLink": {
+            "uri":"[concat(parameters('templateUrl'), 'api/httpbin/api.json', parameters('templateToken'))]"
+        },
+        "parameters": {
+            "apimName": {
+              "value": "[parameters('apimName')]" 
+            },
+            "serviceUrl": {
+              "value": "[parameters('api_httpbin_serviceUrl')]" 
+            }
           }
-        ]
       },
       "dependsOn": [
-        "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apimName'), 'httpBinAPI')]"
+        "[parameters('apimName')]"
       ]
     }
   ],
