@@ -88,7 +88,7 @@ if ($null -eq (Get-AzResourceGroup -Name $ResourceGroupName -Location $Location 
 $additionalParameters = New-Object -TypeName hashtable
 $additionalParameters['apimName'] = $APIMName
 $additionalParameters['templateUrl'] = $templateUrl
-$additionalParameters['templateToken'] = $templateToken
+$additionalParameters['templateToken'] = ConvertTo-SecureString -String $templateToken -AsPlainText
 
 # API Endpoint Service Urls:
 $additionalParameters['api_httpbin_serviceUrl'] = $API_httpbin_ServiceUrl
@@ -100,14 +100,14 @@ $result = New-AzResourceGroupDeployment `
     -TemplateParameterFile $TemplateParameters `
     @additionalParameters `
     -Mode Complete -Force `
-    -Verbose -Debug
+    -Verbose
 
 if ($null -eq $result.Outputs.apimGateway)
 {
     Throw "Template deployment didn't return web app information correctly and therefore deployment is cancelled."
 }
 
-$result
+$result | Select-Object -ExcludeProperty TemplateLinkString
 
 $apimGateway = $result.Outputs.apimGateway.value
 

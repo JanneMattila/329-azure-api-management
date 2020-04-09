@@ -15,7 +15,7 @@
       }
     },
     "templateToken": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Storage account access token for accessing templates"
       }
@@ -61,7 +61,10 @@
           {
             "statusCode": 200,
             "description": "OK",
-            "headers": []
+            "headers": [],
+            "representations": [
+
+            ]
           }
         ]
       },

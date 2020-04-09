@@ -43,7 +43,7 @@
       }
     },
     "templateToken": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Storage account access token for accessing templates"
       }
