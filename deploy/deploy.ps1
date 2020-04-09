@@ -72,8 +72,6 @@ Get-ChildItem -File -Recurse $folder -Filter *.json `
 $containerSasToken = New-AzStorageContainerSASToken -Name $DeploymentContainer -Permission r -ExpiryTime (Get-Date).AddMinutes(30.0)
 $templateUrl = (Get-AzStorageBlob -Container $DeploymentContainer -Blob $Template).ICloudBlob.uri.AbsoluteUri
 
-($templateUrl + $containerSasToken)
-
 # Target deployment resource group
 if ($null -eq (Get-AzResourceGroup -Name $ResourceGroupName -Location $Location -ErrorAction SilentlyContinue))
 {
