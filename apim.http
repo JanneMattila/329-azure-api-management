@@ -1,0 +1,4 @@
+@apim = https://[yourapiminstance].azure-api.net
+
+###
+GET {{apim}}/httpbin/get HTTP/1.1
