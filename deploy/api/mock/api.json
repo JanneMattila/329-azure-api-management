@@ -63,7 +63,10 @@
             "description": "OK",
             "headers": [],
             "representations": [
-
+              {
+                "contentType": "application/json",
+                "sample": "{\r\n    \"from\": \"This is mock response from the APIM\"\r\n}"
+              }
             ]
           }
         ]
