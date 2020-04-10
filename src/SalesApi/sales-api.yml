@@ -1,0 +1,13 @@
+version: 1.0.0
+apimServiceName: myAPIMService
+apis:
+    - name: sales
+      type: http
+      description: Sales api
+      serviceUrl: https://localhost
+      openApiSpec: sales-openapi.json
+      suffix: sales
+      subscriptionRequired: false
+outputLocation: .\\ARMTemplates
+linked: true
+linkedTemplatesBaseUrl : https://mystorageaccount.blob.core.windows.net/mycontainer
