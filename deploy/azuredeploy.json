@@ -142,6 +142,25 @@
       "dependsOn": [
         "[parameters('apimName')]"
       ]
+    },
+    {
+      "name": "apiSalesTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+            "uri":"[concat(parameters('templateUrl'), 'api/sales/api.json', parameters('templateToken'))]"
+        },
+        "parameters": {
+            "apimName": {
+              "value": "[parameters('apimName')]" 
+            }
+          }
+      },
+      "dependsOn": [
+        "[parameters('apimName')]"
+      ]
     }
   ],
   "outputs": {

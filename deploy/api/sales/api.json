@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "apimName": {
+      "type": "string",
+      "metadata": {
+        "description": "API Management name."
+      }
+    }
+  },
+  "variables": {
+    "apiName": "sales",
+    "apiPath": "sales",
+
+    "apiResourceName": "[concat(parameters('apimName'), '/', variables('apiName'))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('apiResourceName')]",
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2019-01-01",
+      "properties": {
+        "displayName": "Sales",
+        "description": "Sales api",
+        "serviceUrl": "https://localhost",
+        "path": "[variables('apiPath')]",
+        "subscriptionRequired": false,
+        "protocols": [
+          "https"
+        ],
+        "value": "{\n  \"openapi\": \"3.0.1\",\n  \"info\": {\n    \"title\": \"Sales Api\",\n    \"version\": \"v1\"\n  },\n  \"paths\": {\n    \"/Sales\": {\n      \"get\": {\n        \"tags\": [\n          \"Sales\"\n        ],\n        \"operationId\": \"GetSales\",\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Success\",\n            \"content\": {\n              \"text/plain\": {\n                \"schema\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"$ref\": \"#/components/schemas/Sales\"\n                  }\n                }\n              },\n              \"application/json\": {\n                \"schema\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"$ref\": \"#/components/schemas/Sales\"\n                  }\n                }\n              },\n              \"text/json\": {\n                \"schema\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"$ref\": \"#/components/schemas/Sales\"\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"/Sales/{id}\": {\n      \"get\": {\n        \"tags\": [\n          \"Sales\"\n        ],\n        \"operationId\": \"GetSalesById\",\n        \"parameters\": [\n          {\n            \"name\": \"id\",\n            \"in\": \"path\",\n            \"required\": true,\n            \"schema\": {\n              \"type\": \"string\",\n              \"nullable\": true\n            }\n          }\n        ],\n        \"responses\": {\n          \"200\": {\n            \"description\": \"Success\",\n            \"content\": {\n              \"text/plain\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Sales\"\n                }\n              },\n              \"application/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Sales\"\n                }\n              },\n              \"text/json\": {\n                \"schema\": {\n                  \"$ref\": \"#/components/schemas/Sales\"\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  },\n  \"components\": {\n    \"schemas\": {\n      \"Sales\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\",\n            \"nullable\": true\n          },\n          \"name\": {\n            \"type\": \"string\",\n            \"nullable\": true\n          },\n          \"qty\": {\n            \"type\": \"number\",\n            \"format\": \"double\"\n          }\n        }\n      }\n    }\n  }\n}",
+        "format": "openapi+json",
+        "apiType": "http"
+      }
+    }
+  ]
+}
