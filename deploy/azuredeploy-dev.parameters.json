@@ -10,8 +10,8 @@
     },
     "serviceUrls": {
       "value": {
-        "mock": "https://local",
-        "sales": "https://sales-local.contoso.com"
+        "mock": "https://dev",
+        "sales": "https://sales-dev.contoso.com"
       }
     }
   }
