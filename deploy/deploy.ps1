@@ -34,7 +34,7 @@ if ([string]::IsNullOrEmpty($env:RELEASE_DEFINITIONNAME))
     Write-Host (@"
 Not executing inside Azure DevOps Release Management.
 Make sure you have done "Login-AzAccount" and
-"Select-AzureRmSubscription -SubscriptionName name"
+"Select-AzSubscription -SubscriptionName name"
 so that script continues to work correctly for you.
 "@)
 }
