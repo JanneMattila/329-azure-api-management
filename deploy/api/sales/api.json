@@ -7,6 +7,12 @@
       "metadata": {
         "description": "API Management name."
       }
+    },
+    "serviceUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Service Url of Sales API"
+      }
     }
   },
   "variables": {
@@ -23,7 +29,7 @@
       "properties": {
         "displayName": "Sales",
         "description": "Sales api",
-        "serviceUrl": "https://localhost",
+        "serviceUrl": "[parameters('serviceUrl')]",
         "path": "[variables('apiPath')]",
         "subscriptionRequired": false,
         "protocols": [

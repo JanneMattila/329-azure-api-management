@@ -8,6 +8,12 @@
         "description": "API Management name."
       }
     },
+    "serviceUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Service Url of Mock API"
+      }
+    },
     "templateUrl": {
       "type": "string",
       "metadata": {
@@ -39,7 +45,7 @@
       "properties": {
         "displayName": "Mock",
         "description": "Some mock example responses",
-        "serviceUrl": "http://invalid",
+        "serviceUrl": "[parameters('serviceUrl')]",
         "path": "[variables('apiPath')]",
         "subscriptionRequired": false,
         "protocols": [
@@ -55,13 +61,15 @@
         "displayName": "Returns mock data using GET.",
         "method": "GET",
         "urlTemplate": "/",
-        "templateParameters": [],
+        "templateParameters": [
+        ],
         "description": "Returns mock data using GET.\n",
         "responses": [
           {
             "statusCode": 200,
             "description": "OK",
-            "headers": [],
+            "headers": [
+            ],
             "representations": [
               {
                 "contentType": "application/json",

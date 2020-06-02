@@ -7,6 +7,12 @@
     },
     "publisherName": {
       "value": "Contoso"
+    },
+    "serviceUrls": {
+      "value": {
+        "mock": "https://invalid",
+        "sales": "https://sales.contoso.com"
+      }
     }
   }
 }

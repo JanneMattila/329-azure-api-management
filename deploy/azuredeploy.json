@@ -22,11 +22,21 @@
         "description": "The name of the owner of the service"
       }
     },
+    // Example of direct parameter specifying the 
+    // service url of backend API
     "api_httpbin_serviceUrl": {
       "type": "string",
       "minLength": 1,
       "metadata": {
         "description": "ServiceUrl of the HttpBinAPI"
+      }
+    },
+    // Example of object containing multiple
+    // backend service urls
+    "serviceUrls": {
+      "type": "object",
+      "metadata": {
+        "description": "ServiceUrls of backend services"
       }
     },
     "location": {
@@ -86,7 +96,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-            "uri":"[concat(parameters('templateUrl'), 'api/httpbin/api.json', parameters('templateToken'))]"
+          "uri": "[concat(parameters('templateUrl'), 'api/httpbin/api.json', parameters('templateToken'))]"
         },
         /*
          * If you prefer configuration parameters in file then this is option:
@@ -95,13 +105,13 @@
         }
          */
         "parameters": {
-            "apimName": {
-              "value": "[parameters('apimName')]" 
-            },
-            "serviceUrl": {
-              "value": "[parameters('api_httpbin_serviceUrl')]" 
-            }
-            /*
+          "apimName": {
+            "value": "[parameters('apimName')]"
+          },
+          "serviceUrl": {
+            "value": "[parameters('api_httpbin_serviceUrl')]"
+          }
+          /*
             * If you prefer configuration parameters from KeyVault then this is option:
             "serviceUrl": {
               "reference": {
@@ -112,7 +122,7 @@
               }
             }
             */
-          }
+        }
       },
       "dependsOn": [
         "[parameters('apimName')]"
@@ -125,19 +135,22 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-            "uri":"[concat(parameters('templateUrl'), 'api/mock/api.json', parameters('templateToken'))]"
+          "uri": "[concat(parameters('templateUrl'), 'api/mock/api.json', parameters('templateToken'))]"
         },
         "parameters": {
-            "apimName": {
-              "value": "[parameters('apimName')]" 
-            },
-            "templateUrl": {
-              "value": "[parameters('templateUrl')]" 
-            },
-            "templateToken": {
-              "value": "[parameters('templateToken')]" 
-            }
+          "apimName": {
+            "value": "[parameters('apimName')]"
+          },
+          "serviceUrl": {
+            "value": "[parameters('serviceUrls').mock]"
+          },
+          "templateUrl": {
+            "value": "[parameters('templateUrl')]"
+          },
+          "templateToken": {
+            "value": "[parameters('templateToken')]"
           }
+        }
       },
       "dependsOn": [
         "[parameters('apimName')]"
@@ -150,13 +163,16 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-            "uri":"[concat(parameters('templateUrl'), 'api/sales/api.json', parameters('templateToken'))]"
+          "uri": "[concat(parameters('templateUrl'), 'api/sales/api.json', parameters('templateToken'))]"
         },
         "parameters": {
-            "apimName": {
-              "value": "[parameters('apimName')]" 
-            }
+          "apimName": {
+            "value": "[parameters('apimName')]"
+          },
+          "serviceUrl": {
+            "value": "[parameters('serviceUrls').sales]"
           }
+        }
       },
       "dependsOn": [
         "[parameters('apimName')]"
